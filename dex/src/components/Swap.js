@@ -1,15 +1,15 @@
 import React from 'react'
-
 import { Box, Typography, TextField, Fab, Popover, Button } from '@mui/material'
-
 import SwapVertIcon from '@mui/icons-material/SwapVert';
+import axios from 'axios'
 
 const tokenList = require('../tokenList.json')
 
 function Swap() {
 
   const [value, setValue] = React.useState('')
-  const [value2, setValue2] = React.useState('')
+  const [exch1, setExch1] = React.useState(0)
+  const [exch2, setExch2] = React.useState(0)
   const [tokenOneType, setTokenOneType] = React.useState(tokenList[0])
   const [tokenTwoType, setTokenTwoType] = React.useState(tokenList[1])
 
@@ -31,8 +31,10 @@ function Swap() {
     if (item.name == tokenTwoType.name) {
       setTokenOneType(tokenTwoType)
       setTokenTwoType(tokenOneType)
+      fetchPrices(tokenTwoType.address, tokenOneType.address)
     } else {
       setTokenOneType(item)
+      fetchPrices(item.address, tokenTwoType.address)
     }
     handlePopoverClose()
   }
@@ -41,8 +43,10 @@ function Swap() {
     if (item.name == tokenOneType.name) {
       setTokenTwoType(tokenOneType)
       setTokenOneType(tokenTwoType)
+      fetchPrices(tokenTwoType.address, tokenOneType.address)
     } else {
       setTokenTwoType(item)
+      fetchPrices(tokenOneType.address, item.address)
     }
     setTokenTwoType(item)
     handlePopoverClose()
@@ -51,11 +55,25 @@ function Swap() {
   const invert = () => {
     setTokenTwoType(tokenOneType)
     setTokenOneType(tokenTwoType)
+    fetchPrices(tokenTwoType.address, tokenOneType.address)
+  }
+
+  React.useEffect(() => {
+    fetchPrices(tokenList[0].address, tokenList[1].address)
+  },[])
+
+  const fetchPrices = async(one, two) => {
+    const res = await axios.get('http://localhost:3001/tokenPrice', {
+      params: {addressOne: one, addressTwo: two}
+    })
+
+    setExch1(res.data.tokenOne)
+    setExch2(res.data.tokenTwo)
   }
 
   return (
     <Box sx={{
-      width: 500, height: 500, background: '#38383888', borderRadius: 10, boxShadow: 10,
+      width: '40%', minWidth: 450, height: 500, background: '#38383888', borderRadius: 10, boxShadow: 10,
       "box-shadow": `0px 0px 10px 0px #9FCC2E`,
       "-webkit-box-shadow": `0px 0px 10px 0px #9FCC2E`,
       "-moz-box-shadow": `0px 0px 10px 0px #9FCC2E`,
@@ -88,11 +106,11 @@ function Swap() {
         </Popover>
       </Box>
       <Box sx={{ marginTop: '10px', marginBottom: '20px', display: 'flex', width: '90%', flexDirection: 'row', justifyContent: 'space-between', marginLeft: '5%' }}>
-        <Typography sx={{color: '#9FCC2E' }}>US$ {value * 15000}</Typography>
+        <Typography sx={{color: '#9FCC2E' }}>US$ {Math.round(value/exch1*100)/100}</Typography>
         <SwapVertIcon onClick={() => invert()} sx={{ cursor: 'pointer', marginTop: '10px' }} color={'third'} fontSize='large' />
       </Box>
       <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-evenly', alignItems: 'center' }}>
-        <TextField InputProps={{ sx: { borderRadius: 5 } }} inputProps={{ style: { color: '#fff' } }} sx={{ color: '#fff', background: '#000', width: '60%', borderRadius: 5 }} focused color='primary' id="outlined-basic" label="" variant="outlined" value={value2} />
+        <TextField InputProps={{ sx: { borderRadius: 5 } }} inputProps={{ style: { color: '#fff' } }} sx={{ color: '#fff', background: '#000', width: '60%', borderRadius: 5 }} focused color='primary' id="outlined-basic" label="" variant="outlined" value={Math.round(value*exch2/exch1*10000)/10000} />
         <Typography sx={{ width: 80 }}>{tokenTwoType.ticker}</Typography>
         <Fab onClick={handlePopoverOpen2} id={'changeToken'} color="primary" aria-label="add">
           <Box component="img" sx={{ width: '70%', borderRadius: 5 }} alt="Lottery 1" src={tokenTwoType.img} />
