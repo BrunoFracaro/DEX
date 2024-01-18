@@ -95,9 +95,9 @@ function Swap() {
             horizontal: 'right',
           }}
         >
-          <Box sx={{ background: '#383838', padding: 2, height: 200 }}>
+          <Box sx={{ padding: 2, height: 250, }}>
             {tokenList.map((item) => (
-              <Box onClick={() => handleChangeToken1(item)} sx={{ display: 'flex', width: 200, flexDirection: 'row', alignItems: 'center', cursor: 'pointer', padding: 1, justifyContent: 'space-between' }}>
+              <Box onClick={() => handleChangeToken1(item)} sx={{ display: 'flex', width: 150, flexDirection: 'row', alignItems: 'center', cursor: 'pointer', padding: 1, justifyContent: 'space-between' }}>
                 <Typography color='#9FCC2E'>{item.name}</Typography>
                 <Box component="img" sx={{ width: 50, borderRadius: 5 }} alt="Lottery 1" src={item.img} />
               </Box>
@@ -106,11 +106,11 @@ function Swap() {
         </Popover>
       </Box>
       <Box sx={{ marginTop: '10px', marginBottom: '20px', display: 'flex', width: '90%', flexDirection: 'row', justifyContent: 'space-between', marginLeft: '5%' }}>
-        <Typography sx={{color: '#9FCC2E' }}>US$ {Math.round(value/exch1*100)/100}</Typography>
+        <Typography sx={{color: '#9FCC2E' }}>US$ {Math.round(value * exch1*100)/100}</Typography>
         <SwapVertIcon onClick={() => invert()} sx={{ cursor: 'pointer', marginTop: '10px' }} color={'third'} fontSize='large' />
       </Box>
       <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-evenly', alignItems: 'center' }}>
-        <TextField InputProps={{ sx: { borderRadius: 5 } }} inputProps={{ style: { color: '#fff' } }} sx={{ color: '#fff', background: '#000', width: '60%', borderRadius: 5 }} focused color='primary' id="outlined-basic" label="" variant="outlined" value={Math.round(value*exch2/exch1*10000)/10000} />
+        <TextField InputProps={{ sx: { borderRadius: 5 } }} inputProps={{ style: { color: '#fff' } }} sx={{ color: '#fff', background: '#000', width: '60%', borderRadius: 5 }} focused color='primary' id="outlined-basic" label="" variant="outlined" value={Math.round(value*exch1/exch2*10000)/10000} />
         <Typography sx={{ width: 80 }}>{tokenTwoType.ticker}</Typography>
         <Fab onClick={handlePopoverOpen2} id={'changeToken'} color="primary" aria-label="add">
           <Box component="img" sx={{ width: '70%', borderRadius: 5 }} alt="Lottery 1" src={tokenTwoType.img} />
@@ -125,9 +125,9 @@ function Swap() {
             horizontal: 'right',
           }}
         >
-          <Box sx={{ background: '#383838', padding: 2, height: 200 }}>
+          <Box sx={{ padding: 2, height: 250 }}>
             {tokenList.sort().map((item) => (
-              <Box onClick={() => handleChangeToken2(item)} sx={{ display: 'flex', width: 200, flexDirection: 'row', alignItems: 'center', cursor: 'pointer', padding: 1, justifyContent: 'space-between' }}>
+              <Box onClick={() => handleChangeToken2(item)} sx={{ display: 'flex', width: 150, flexDirection: 'row', alignItems: 'center', cursor: 'pointer', padding: 1, justifyContent: 'space-between' }}>
                 <Typography color='#9FCC2E'>{item.name}</Typography>
                 <Box component="img" sx={{ width: 50, borderRadius: 5 }} alt="Lottery 1" src={item.img} />
               </Box>
