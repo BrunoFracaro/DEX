@@ -31,6 +31,22 @@ app.get("/tokenPrice", async (req, res) => {
   return res.status(200).json(usdPrices);
 });
 
+app.get("/allowance", async (req, res) => {
+
+  const {query} = req
+
+  console.log({query})
+
+  const responseOne = await fetch(`https://api.1inch.io/v5.0/1/approve/allowance?tokenAddress=${query.addressToken}&walletAddress=${query.address}`)
+  console.log('responseOne.data', responseOne.data)
+
+  await fetch(`https://api.1inch.io/v5.0/1/approve/allowance?tokenAddress=${query.addressToken}&walletAddress=${query.address}`)
+  .then((response) => response.json())
+  .then((responseJson) => console.log('here', responseJson))
+
+});
+
+
 Moralis.start({
   apiKey: process.env.MORALIS_KEY,
 }).then(() => {

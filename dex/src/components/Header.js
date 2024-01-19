@@ -11,7 +11,7 @@ function Header(props) {
 
   return (
     <Box sx={{
-      display: 'flex', background: '#38383888', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', height: '70px', paddingRight: '10%',
+      display: 'flex', background: '#38383888', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingRight: '10%',
       "box-shadow": `0px 0px 10px 0px #383838`,
       "-webkit-box-shadow": `0px 0px 10px 0px #383838`,
       "-moz-box-shadow": `0px 0px 10px 0px #383838`,

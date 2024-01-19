@@ -5,6 +5,8 @@ import axios from 'axios'
 import { useSendTransaction, useWaitForTransaction } from "wagmi";
 import { ReactComponent as Logo } from "../eth.svg";
 import { Alchemy, Network } from "alchemy-sdk";
+import Stack from '@mui/material/Stack';
+import LinearProgress from '@mui/material/LinearProgress';
 
 const config = {
   apiKey: process.env.REACT_APP_ALCHEMY,
@@ -24,6 +26,9 @@ function Swap(props) {
   const [exch2, setExch2] = React.useState(0)
   const [tokenOneType, setTokenOneType] = React.useState(tokenList[0])
   const [tokenTwoType, setTokenTwoType] = React.useState(tokenList[1])
+
+  const [dimensions, setDimensions] = React.useState([0, 0])
+  const ref = React.useRef(null)
 
   const [txDetails, setTxDetails] = React.useState({
     to: null,
@@ -52,6 +57,12 @@ function Swap(props) {
   })
 
   async function fetchDexSwap() {
+
+    console.log('tokenOneType', tokenOneType.address, address)
+
+    // const res = await axios.get('http://localhost:3001/allowance', {
+    //   params: { addressToken: tokenOneType.address, address: address }
+    // })
 
     const allowance = await axios.get(`https://api.1inch.io/v5.0/1/approve/allowance?tokenAddress=${tokenOneType.address}&walletAddress=${address}`)
 
@@ -125,9 +136,10 @@ function Swap(props) {
   React.useEffect(() => {
     fetchPrices(tokenList[0].address, tokenList[1].address)
     getUserBalance()
+    setDimensions([ref.current.clientWidth, ref.current.clientHeight])
   }, [])
 
-  const getUserBalance = async() => {
+  const getUserBalance = async () => {
     const tokenAddress = tokenList.map((item) => item.address)
     console.log('address,', address, tokenAddress)
     const data = await alchemy.core.getTokenBalances(
@@ -158,19 +170,31 @@ function Swap(props) {
 
   return (
     <Box sx={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'flex-start', padding: 2 }}>
-      <Box sx={{
-        width: '30%', minWidth: 400, height: '400px', paddingBottom: 5, background: '#38383888', borderRadius: 5, boxShadow: 10,
+      <Box ref={ref} sx={{
+        width: '30%', minWidth: 400, paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10,
         "box-shadow": `0px 0px 10px 0px #0CD0AC`,
         "-webkit-box-shadow": `0px 0px 10px 0px #0CD0AC`,
         "-moz-box-shadow": `0px 0px 10px 0px #0CD0AC`,
       }}>
-        {!isConnected ? (
-          <Box className={'modalGlass'} sx={{ zIndex: 100000, borderRadius: 5, position: 'absolute', display: 'flex', width: '31%', minWidth: 400, height: '430px', paddingBottom: 5, marginLeft: -2, marginTop: -2, justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-            <Logo />
-            <Typography marginBottom={2} color={'third.light'} width={'50%'} marginTop={2} fontWeight={600}>
-              Connect your Ethereum wallet to make ERC-20 tokens swaps
-            </Typography>
-            <Button onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect"}</Button>
+        {!isConnected || isLoading ? (
+          <Box className={'modalGlass'} sx={{ zIndex: 100000, borderRadius: 5, position: 'absolute', display: 'flex', width: dimensions[0], height: dimensions[1], justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+            {!isConnected ? (
+              <>
+                <Logo />
+                <Typography marginBottom={2} color={'third.light'} width={'50%'} marginTop={2} fontWeight={600}>
+                  Connect your Ethereum wallet to make ERC-20 tokens swaps
+                </Typography>
+                <Button onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect"}</Button>
+              </>
+            ) : (
+              <>
+                <Typography color={'third.light'} fontWeight={600} marginBottom={2} >Approve the transactions on your wallet</Typography>
+                <Typography width={'80%'} fontWeight={600} marginBottom={2} >In your first swap with a token, the gas fee is higher as you need to approve the transaction of the token</Typography>
+                <Stack sx={{ width: '80%' }} spacing={2}>
+                  <LinearProgress sx={{borderRadius: 3, height: 10}} color="third" />
+                </Stack>
+              </>
+            )}
           </Box>
         ) : undefined}
         <Typography ml={'10%'} width={'80%'} mb={5} mt={2} fontSize={28} color={'third.main'}>Swap your ERC-20 token on the Ethereum Blockchain</Typography>
@@ -202,7 +226,7 @@ function Swap(props) {
         </Box>
         <Box sx={{ marginTop: '10px', marginBottom: '20px', display: 'flex', width: '90%', flexDirection: 'row', justifyContent: 'space-between', marginLeft: '5%' }}>
           <Typography sx={{ color: 'third.main', fontSize: 12 }}>US$ {Math.round(value * exch1 * 100) / 100}</Typography>
-          <Typography sx={{ color: 'primary.medium', fontSize: 12 }}>Your balance: {Math.round(displayBalance*100)/100}</Typography>
+          <Typography sx={{ color: 'primary.medium', fontSize: 12 }}>Your balance: {Math.round(displayBalance * 100) / 100}</Typography>
           <SwapVertIcon onClick={() => invert()} sx={{ cursor: 'pointer', marginTop: '10px' }} color={'third'} fontSize='large' />
         </Box>
         <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-evenly', alignItems: 'center' }}>
