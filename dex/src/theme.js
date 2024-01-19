@@ -36,7 +36,7 @@ const defaultTheme = createTheme({
           },
           '&::-webkit-scrollbar-thumb': {
             backgroundColor: 'rgba(255,255,255,1)',
-            borderRadius: 2,
+            borderRadius: 5,
           }
         }
       }

@@ -5,15 +5,23 @@ import Tokens from './components/Tokens'
 import { ThemeProvider } from '@mui/material/styles';
 import defaultTheme from "./theme";
 import { Routes, Route } from "react-router-dom";
+import { useConnect, useAccount } from "wagmi";
+import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 
 function App() {
+
+  const { address, isConnected } = useAccount();
+  const { connect } = useConnect({
+    connector: new MetaMaskConnector(),
+  });
+
   return (
     <div className="App">
       <ThemeProvider theme={defaultTheme}>
-        <Header />
+        <Header connect={connect} isConnected={isConnected} address={address} />
         <div className="mainWindow">
           <Routes>
-            <Route path="/" element={<Swap />} />
+            <Route path="/" element={<Swap isConnected={isConnected} address={address} />} />
             <Route path="/tokens" element={<Tokens />} />
           </Routes>
         </div>
