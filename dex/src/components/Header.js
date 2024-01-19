@@ -1,35 +1,37 @@
 import React from 'react'
-import { Box, SvgIcon, Button } from '@mui/material'
-import { ReactComponent as Logo } from "../moralis-logo.svg";
-import { Link } from 'react-router-dom';
+import { Box, Button, Typography, Link } from '@mui/material'
+import { useLocation } from 'react-router-dom'
+import { ReactComponent as Logo } from "../cryptoswap.svg";
 
 function Header(props) {
 
-  const {address, isConnected, connect} = props;
+  const { address, isConnected, connect } = props;
 
+  const location = useLocation();
 
   return (
-    <Box sx={{ display: 'flex', background: '#38383888', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 2, paddingBottom: 2, paddingLeft: '10%', paddingRight: '10%',
-    "box-shadow": `0px 0px 10px 0px #383838`,
-    "-webkit-box-shadow": `0px 0px 10px 0px #383838`,
-    "-moz-box-shadow": `0px 0px 10px 0px #383838`,
+    <Box sx={{
+      display: 'flex', background: '#38383888', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', height: '70px', paddingRight: '10%',
+      "box-shadow": `0px 0px 10px 0px #383838`,
+      "-webkit-box-shadow": `0px 0px 10px 0px #383838`,
+      "-moz-box-shadow": `0px 0px 10px 0px #383838`,
     }}>
-      <SvgIcon fontSize='large'>
-        <Logo />
-      </SvgIcon>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-        <Box sx={{ marginRight: 2 }}>
-          <Link to="/">
-            <Button variant='outlined' color={'third'}>Swap</Button>
-          </Link>
-        </Box>
-        <Box sx={{ marginLeft: 2 }}>
-          <Link to="/tokens">
-            <Button variant='outlined' color={'third'}>Tokens</Button>
-          </Link>
-        </Box>
+        <Link href="/" underline="none">
+          <Box className={'color-transition'} sx={{ display: 'flex', width: 200, background: location.pathname == '/' ? '#0CD0AC' : '#38383888', height: '70px', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 2 }}>
+            <Typography sx={{ fontSize: 20 }}>SWAP</Typography>
+          </Box>
+        </Link>
+        <Link href="/tokens" underline="none">
+          <Box className={'color-transition2'} sx={{ display: 'flex', width: 200, background: location.pathname == '/tokens' ? '#36E5C7' : '#38383888', height: '70px', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 2 }}>
+            <Typography sx={{ fontSize: 20 }}>TOKENOMICS</Typography>
+          </Box>
+        </Link>
       </Box>
-      <Button onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0,4) +"..." +address.slice(38)) : "Connect"}</Button>
+      <Box sx={{ display: 'flex', alignItems: 'center'}}>
+        <Logo />
+      </Box>
+      <Button onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect"}</Button>
     </Box>
   )
 }

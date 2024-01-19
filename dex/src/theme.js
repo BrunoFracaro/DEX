@@ -15,10 +15,10 @@ const defaultTheme = createTheme({
       light: '#9FCC2E'
     },
     third: {
-      main: '#9FCC2E',
-      dark: '#9FCC2E',
-      medium: '#9FCC2E',
-      light: '#9FCC2E'
+      main: '#0CD0AC',
+      dark: '#007E5E',
+      medium: '#09A682',
+      light: '#36E5C7'
     },
   },
   components:{

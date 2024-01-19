@@ -123,22 +123,14 @@ function Swap(props) {
   }
 
   return (
-    <Box sx={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-      <Box sx={{
-        width: '20%', marginTop: '200px', height: '500px', minWidth: 350, paddingBottom: 5, background: '#38383888', borderRadius: 10, boxShadow: 10,
-        "box-shadow": `0px 0px 10px 0px #fafafa`,
-        "-webkit-box-shadow": `0px 0px 10px 0px #fafafa`,
-        "-moz-box-shadow": `0px 0px 10px 0px #fafafa`,
-      }}>
-
-      </Box>
+    <Box sx={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'flex-start', padding: 2 }}>
       <Box sx={{
         width: '40%', minWidth: 450, height: '400px', paddingBottom: 5, background: '#38383888', borderRadius: 10, boxShadow: 10,
-        "box-shadow": `0px 0px 10px 0px #9FCC2E`,
-        "-webkit-box-shadow": `0px 0px 10px 0px #9FCC2E`,
-        "-moz-box-shadow": `0px 0px 10px 0px #9FCC2E`,
+        "box-shadow": `0px 0px 10px 0px #0CD0AC`,
+        "-webkit-box-shadow": `0px 0px 10px 0px #0CD0AC`,
+        "-moz-box-shadow": `0px 0px 10px 0px #0CD0AC`,
       }}>
-        <Typography mb={5} fontWeight={'700'} fontSize={32} color={'third.main'}>CryptoSwap</Typography>
+        <Typography ml={'10%'} width={'80%'} mb={5} mt={2} fontSize={28} color={'third.main'}>Swap your ERC-20 token on the Ethereum Blockchain</Typography>
         <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-evenly', alignItems: 'center' }}>
           <TextField placeholder='0' InputProps={{ sx: { borderRadius: 5, color: '#f00' } }} inputProps={{ style: { color: '#fff' } }} sx={{ color: '#fff', background: '#000', width: '60%', borderRadius: 5 }} focused color='primary' id="outlined-basic" label="" variant="outlined" value={value} onChange={(e) => setValue(e.target.value)} />
           <Typography sx={{ width: 80 }}>{tokenOneType.ticker}</Typography>
@@ -158,7 +150,7 @@ function Swap(props) {
             <Box sx={{ padding: 2, height: 250, }}>
               {tokenList.map((item) => (
                 <Box onClick={() => handleChangeToken1(item)} sx={{ display: 'flex', width: 150, flexDirection: 'row', alignItems: 'center', cursor: 'pointer', padding: 1, justifyContent: 'space-between' }}>
-                  <Typography color='#9FCC2E'>{item.name}</Typography>
+                  <Typography color='third.main'>{item.name}</Typography>
                   <Box component="img" sx={{ width: 50, borderRadius: 5 }} alt="Lottery 1" src={item.img} />
                 </Box>
               ))}
@@ -166,7 +158,7 @@ function Swap(props) {
           </Popover>
         </Box>
         <Box sx={{ marginTop: '10px', marginBottom: '20px', display: 'flex', width: '90%', flexDirection: 'row', justifyContent: 'space-between', marginLeft: '5%' }}>
-          <Typography sx={{ color: '#9FCC2E' }}>US$ {Math.round(value * exch1 * 100) / 100}</Typography>
+          <Typography sx={{ color: 'third.main' }}>US$ {Math.round(value * exch1 * 100) / 100}</Typography>
           <SwapVertIcon onClick={() => invert()} sx={{ cursor: 'pointer', marginTop: '10px' }} color={'third'} fontSize='large' />
         </Box>
         <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-evenly', alignItems: 'center' }}>
@@ -196,14 +188,6 @@ function Swap(props) {
           </Popover>
         </Box>
         <Button onClick={fetchDexSwap} disabled={!value || !isConnected} sx={{ width: '90%', height: '50px', marginTop: '30px' }} color='third' variant='contained'>Swap</Button>
-      </Box>
-      <Box sx={{
-        width: '20%', marginTop: '200px', height: '500px', minWidth: 350, paddingBottom: 5, background: '#38383888', borderRadius: 10, boxShadow: 10,
-        "box-shadow": `0px 0px 10px 0px #fafafa`,
-        "-webkit-box-shadow": `0px 0px 10px 0px #fafafa`,
-        "-moz-box-shadow": `0px 0px 10px 0px #fafafa`,
-      }}>
-
       </Box>
     </Box>
   )
