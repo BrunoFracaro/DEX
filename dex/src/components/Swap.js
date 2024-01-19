@@ -3,11 +3,12 @@ import { Box, Typography, TextField, Fab, Popover, Button } from '@mui/material'
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import axios from 'axios'
 import { useSendTransaction, useWaitForTransaction } from "wagmi";
+import { ReactComponent as Logo } from "../eth.svg";
 
 const tokenList = require('../tokenList.json')
 
 function Swap(props) {
-  const { address, isConnected } = props;
+  const { address, isConnected, connect } = props;
 
   const [value, setValue] = React.useState('')
   const [exch1, setExch1] = React.useState(0)
@@ -125,11 +126,20 @@ function Swap(props) {
   return (
     <Box sx={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'flex-start', padding: 2 }}>
       <Box sx={{
-        width: '40%', minWidth: 450, height: '400px', paddingBottom: 5, background: '#38383888', borderRadius: 10, boxShadow: 10,
+        width: '30%', minWidth: 400, height: '400px', paddingBottom: 5, background: '#38383888', borderRadius: 10, boxShadow: 10,
         "box-shadow": `0px 0px 10px 0px #0CD0AC`,
         "-webkit-box-shadow": `0px 0px 10px 0px #0CD0AC`,
         "-moz-box-shadow": `0px 0px 10px 0px #0CD0AC`,
       }}>
+        {!isConnected ? (
+          <Box className={'modalGlass'} sx={{ zIndex: 100000, borderRadius: 10, position: 'absolute', display: 'flex', width: '31%', minWidth: 400, height: '430px', paddingBottom: 5, marginLeft: -2, marginTop: -2, justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+            <Logo />
+            <Typography marginBottom={2} color={'third.light'} width={'50%'} marginTop={2} fontWeight={600}>
+              Connect your Ethereum wallet to make ERC-20 tokens swaps
+            </Typography>
+            <Button onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect"}</Button>
+          </Box>
+        ) : undefined}
         <Typography ml={'10%'} width={'80%'} mb={5} mt={2} fontSize={28} color={'third.main'}>Swap your ERC-20 token on the Ethereum Blockchain</Typography>
         <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-evenly', alignItems: 'center' }}>
           <TextField placeholder='0' InputProps={{ sx: { borderRadius: 5, color: '#f00' } }} inputProps={{ style: { color: '#fff' } }} sx={{ color: '#fff', background: '#000', width: '60%', borderRadius: 5 }} focused color='primary' id="outlined-basic" label="" variant="outlined" value={value} onChange={(e) => setValue(e.target.value)} />
