@@ -20,6 +20,9 @@ const defaultTheme = createTheme({
       medium: '#09A682',
       light: '#36E5C7'
     },
+    action: {
+      disabled: '#007E5E'
+    }
   },
   components:{
     MuiPopover:{
@@ -38,6 +41,20 @@ const defaultTheme = createTheme({
             backgroundColor: 'rgba(255,255,255,1)',
             borderRadius: 5,
           }
+        }
+      }
+    },
+    MuiFab:{
+      styleOverrides:{
+        root:{
+          borderRadius:10
+        }
+      }
+    },
+    MuiButton:{
+      styleOverrides:{
+        disabled:{
+          background: '#f00'
         }
       }
     }

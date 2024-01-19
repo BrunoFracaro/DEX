@@ -159,13 +159,13 @@ function Swap(props) {
   return (
     <Box sx={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'flex-start', padding: 2 }}>
       <Box sx={{
-        width: '30%', minWidth: 400, height: '400px', paddingBottom: 5, background: '#38383888', borderRadius: 10, boxShadow: 10,
+        width: '30%', minWidth: 400, height: '400px', paddingBottom: 5, background: '#38383888', borderRadius: 5, boxShadow: 10,
         "box-shadow": `0px 0px 10px 0px #0CD0AC`,
         "-webkit-box-shadow": `0px 0px 10px 0px #0CD0AC`,
         "-moz-box-shadow": `0px 0px 10px 0px #0CD0AC`,
       }}>
         {!isConnected ? (
-          <Box className={'modalGlass'} sx={{ zIndex: 100000, borderRadius: 10, position: 'absolute', display: 'flex', width: '31%', minWidth: 400, height: '430px', paddingBottom: 5, marginLeft: -2, marginTop: -2, justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+          <Box className={'modalGlass'} sx={{ zIndex: 100000, borderRadius: 5, position: 'absolute', display: 'flex', width: '31%', minWidth: 400, height: '430px', paddingBottom: 5, marginLeft: -2, marginTop: -2, justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <Logo />
             <Typography marginBottom={2} color={'third.light'} width={'50%'} marginTop={2} fontWeight={600}>
               Connect your Ethereum wallet to make ERC-20 tokens swaps
@@ -175,7 +175,7 @@ function Swap(props) {
         ) : undefined}
         <Typography ml={'10%'} width={'80%'} mb={5} mt={2} fontSize={28} color={'third.main'}>Swap your ERC-20 token on the Ethereum Blockchain</Typography>
         <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-evenly', alignItems: 'center' }}>
-          <TextField placeholder='0' InputProps={{ sx: { borderRadius: 5, color: '#f00' } }} inputProps={{ style: { color: '#fff' } }} sx={{ color: '#fff', background: '#000', width: '60%', borderRadius: 5 }} focused color='primary' id="outlined-basic" label="" variant="outlined" value={value} onChange={(e) => setValue(e.target.value)} />
+          <TextField type={'number'} placeholder='0' InputProps={{ sx: { borderRadius: 2, color: '#f00' } }} inputProps={{ style: { color: '#fff' } }} sx={{ color: '#fff', background: '#000', width: '60%', borderRadius: 2 }} focused color='primary' id="outlined-basic" label="" variant="outlined" value={value} onChange={(e) => setValue(e.target.value)} />
           <Typography sx={{ width: 80 }}>{tokenOneType.ticker}</Typography>
           <Fab onClick={handlePopoverOpen} id={'myToken'} color="primary" aria-label="add">
             <Box component="img" sx={{ width: '70%', borderRadius: 5 }} alt="selected token" src={tokenOneType.img} />
@@ -206,7 +206,7 @@ function Swap(props) {
           <SwapVertIcon onClick={() => invert()} sx={{ cursor: 'pointer', marginTop: '10px' }} color={'third'} fontSize='large' />
         </Box>
         <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-evenly', alignItems: 'center' }}>
-          <TextField InputProps={{ sx: { borderRadius: 5 } }} inputProps={{ style: { color: '#fff' } }} sx={{ color: '#fff', background: '#000', width: '60%', borderRadius: 5 }} focused color='primary' id="outlined-basic" label="" variant="outlined" value={Math.round(value * exch1 / exch2 * 10000) / 10000} />
+          <TextField InputProps={{ sx: { borderRadius: 2 } }} inputProps={{ style: { color: '#fff' } }} sx={{ color: '#fff', background: '#000', width: '60%', borderRadius: 2 }} focused color='primary' id="outlined-basic" label="" variant="outlined" value={Math.round(value * exch1 / exch2 * 10000) / 10000} />
           <Typography sx={{ width: 80 }}>{tokenTwoType.ticker}</Typography>
           <Fab onClick={handlePopoverOpen2} id={'changeToken'} color="primary" aria-label="add">
             <Box component="img" sx={{ width: '70%', borderRadius: 5 }} alt="Lottery 1" src={tokenTwoType.img} />
