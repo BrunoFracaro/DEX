@@ -259,7 +259,7 @@ function Swap(props) {
         <Button onClick={fetchDexSwap} disabled={!value || !isConnected} sx={{ width: '90%', height: '50px', marginTop: '30px' }} color='third' variant='contained'>Swap</Button>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-        <Box ref={ref} sx={{
+        <Box sx={{
           width: '90%', height: 'fit-content', minWidth: 400, paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10, marginLeft: '2%',
           "box-shadow": `0px 0px 10px 0px #fafafa`,
           "-webkit-box-shadow": `0px 0px 10px 0px #fafafa`,
@@ -268,7 +268,7 @@ function Swap(props) {
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} mb={5} mt={2} fontSize={28} color={'primary.ligth'}>Swapping ERC-20 tokens</Typography>
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} color={'primary.medium'}>First you have to authorize our contract to spent your ERC-20 tokens that you want to give, as for defult, no one is authorized to trade tokens on your behalf. Next we will transfer your desired tokens from a pool of tokens using the Alchemy aggregator. This will asure the minimum gas fee and stragith convertio rate. We dont take any profit from the swap.</Typography>
         </Box>
-        <Box ref={ref} sx={{
+        <Box sx={{
           marginTop: 2, width: '90%', height: 'fit-content', minWidth: 400, paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10, marginLeft: '2%',
           "box-shadow": `0px 0px 10px 0px #36E5C7`,
           "-webkit-box-shadow": `0px 0px 10px 0px #36E5C7`,

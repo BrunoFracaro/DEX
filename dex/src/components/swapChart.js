@@ -29,14 +29,13 @@ export default function SimpleAreaChart({ dimensions }) {
   }, [])
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
       <Typography>USD</Typography>
       <LineChart
-        width={dimensions[0]*0.8}
+        width={dimensions[0]*2}
         height={300}
         series={[{ data: dataY, area: true, showMark: false }]}
         xAxis={[{ scaleType: 'point', data: dataX }]}
-        leftAxis={null}
         sx={{
           '.MuiLineElement-root': {
             display: 'none',
