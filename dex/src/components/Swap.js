@@ -191,7 +191,7 @@ function Swap(props) {
                 <Typography color={'third.light'} fontWeight={600} marginBottom={2} >Approve the transactions on your wallet</Typography>
                 <Typography width={'80%'} fontWeight={600} marginBottom={2} >In your first swap with a token, the gas fee is higher as you need to approve the transaction of the token</Typography>
                 <Stack sx={{ width: '80%' }} spacing={2}>
-                  <LinearProgress sx={{borderRadius: 3, height: 10}} color="third" />
+                  <LinearProgress sx={{ borderRadius: 3, height: 10 }} color="third" />
                 </Stack>
               </>
             )}
@@ -218,7 +218,7 @@ function Swap(props) {
               {tokenList.map((item) => (
                 <Box onClick={() => handleChangeToken1(item)} sx={{ display: 'flex', width: 150, flexDirection: 'row', alignItems: 'center', cursor: 'pointer', padding: 1, justifyContent: 'space-between' }}>
                   <Typography color='third.main'>{item.name}</Typography>
-                  <Box component="img" sx={{ width: 50, borderRadius: 5 }} alt="token img" src={item.img} />
+                  <Box component="img" sx={{ width: 40, borderRadius: 5 }} alt="token img" src={item.img} />
                 </Box>
               ))}
             </Box>
@@ -248,14 +248,34 @@ function Swap(props) {
             <Box sx={{ padding: 2, height: 250 }}>
               {tokenList.sort().map((item) => (
                 <Box onClick={() => handleChangeToken2(item)} sx={{ display: 'flex', width: 150, flexDirection: 'row', alignItems: 'center', cursor: 'pointer', padding: 1, justifyContent: 'space-between' }}>
-                  <Typography color='#9FCC2E'>{item.name}</Typography>
-                  <Box component="img" sx={{ width: 50, borderRadius: 5 }} alt="Lottery 1" src={item.img} />
+                  <Typography color={'third.main'}>{item.name}</Typography>
+                  <Box component="img" sx={{ width: 40, borderRadius: 5 }} alt="Lottery 1" src={item.img} />
                 </Box>
               ))}
             </Box>
           </Popover>
         </Box>
         <Button onClick={fetchDexSwap} disabled={!value || !isConnected} sx={{ width: '90%', height: '50px', marginTop: '30px' }} color='third' variant='contained'>Swap</Button>
+      </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        <Box ref={ref} sx={{
+          width: '90%', height: 'fit-content', minWidth: 400, paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10, marginLeft: '2%',
+          "box-shadow": `0px 0px 10px 0px #fafafa`,
+          "-webkit-box-shadow": `0px 0px 10px 0px #fafafa`,
+          "-moz-box-shadow": `0px 0px 10px 0px #fafafa`,
+        }}>
+          <Typography textAlign={'left'} ml={'5%'} width={'90%'} mb={5} mt={2} fontSize={28} color={'primary.ligth'}>Swapping ERC-20 tokens</Typography>
+          <Typography textAlign={'left'} ml={'5%'} width={'90%'} color={'primary.medium'}>First you have to authorize our contract to spent your ERC-20 tokens that you want to give, as for defult, no one is authorized to trade tokens on your behalf. Next we will transfer your desired tokens from a pool of tokens using the Alchemy aggregator. This will asure the minimum gas fee and stragith convertio rate. We dont take any profit from the swap.</Typography>
+        </Box>
+        <Box ref={ref} sx={{
+          marginTop: 2, width: '90%', height: 'fit-content', minWidth: 400, paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10, marginLeft: '2%',
+          "box-shadow": `0px 0px 10px 0px #36E5C7`,
+          "-webkit-box-shadow": `0px 0px 10px 0px #36E5C7`,
+          "-moz-box-shadow": `0px 0px 10px 0px #36E5C7`,
+        }}>
+          <Typography textAlign={'left'} ml={'5%'} width={'90%'} mb={5} mt={2} fontSize={28} color={'third.ligth'}>Tokenomics</Typography>
+          <Typography textAlign={'left'} ml={'5%'} width={'90%'} color={'primary.medium'}>Check the TOKENOMICS tab to see more about each token project out there.</Typography>
+        </Box>
       </Box>
     </Box>
   )

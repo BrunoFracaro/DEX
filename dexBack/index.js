@@ -1,7 +1,9 @@
 const express = require("express");
 const Moralis = require("moralis").default;
+const { EvmChain } = require("@moralisweb3/common-evm-utils");
 const app = express();
 const cors = require("cors");
+var fs = require('fs');
 require("dotenv").config();
 const port = 3001;
 
@@ -54,3 +56,40 @@ Moralis.start({
     console.log(`Listening for API Calls`);
   });
 });
+
+const runApp = async () => {
+
+  console.log('strrt')
+
+  const historicalPrice = [];
+
+  const address = "0x514910771af9ca656af840dff83e8264ecf986ca";
+
+  const chain = EvmChain.ETHEREUM;
+
+  for (let toBlock = 7114538; toBlock < 19070429; toBlock += 10000) {
+    const response = await Moralis.EvmApi.token.getTokenPrice({
+      address,
+      chain,
+      toBlock,
+    });
+
+    historicalPrice.push(response?.toJSON());
+  }
+
+  console.log(historicalPrice);
+  fs.writeFile(
+
+    './chainLink_historical.json',
+
+    JSON.stringify(historicalPrice),
+
+    function (err) {
+        if (err) {
+            console.error('Crap happens');
+        }
+    }
+);
+};
+
+runApp();
