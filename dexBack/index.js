@@ -12,9 +12,9 @@ app.use(express.json());
 
 app.get("/tokenPrice", async (req, res) => {
 
-  const {query} = req
+  const { query } = req
 
-  console.log({query})
+  console.log({ query })
 
   const responseOne = await Moralis.EvmApi.token.getTokenPrice({
     address: query.addressOne
@@ -27,24 +27,24 @@ app.get("/tokenPrice", async (req, res) => {
   const usdPrices = {
     tokenOne: responseOne.raw.usdPrice,
     tokenTwo: responseTwo.raw.usdPrice,
-    ratio: responseOne.raw.usdPrice/responseTwo.raw.usdPrice,
+    ratio: responseOne.raw.usdPrice / responseTwo.raw.usdPrice,
   }
-  
+
   return res.status(200).json(usdPrices);
 });
 
 app.get("/allowance", async (req, res) => {
 
-  const {query} = req
+  const { query } = req
 
-  console.log({query})
+  console.log({ query })
 
   const responseOne = await fetch(`https://api.1inch.io/v5.0/1/approve/allowance?tokenAddress=${query.addressToken}&walletAddress=${query.address}`)
   console.log('responseOne.data', responseOne.data)
 
   await fetch(`https://api.1inch.io/v5.0/1/approve/allowance?tokenAddress=${query.addressToken}&walletAddress=${query.address}`)
-  .then((response) => response.json())
-  .then((responseJson) => console.log('here', responseJson))
+    .then((response) => response.json())
+    .then((responseJson) => console.log('here', responseJson))
 
 });
 
@@ -63,11 +63,11 @@ const runApp = async () => {
 
   const historicalPrice = [];
 
-  const address = "0x514910771af9ca656af840dff83e8264ecf986ca";
+  const address = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
 
   const chain = EvmChain.ETHEREUM;
 
-  for (let toBlock = 7114538; toBlock < 19070429; toBlock += 10000) {
+  for (let toBlock = 16470961; toBlock < 19070429; toBlock += 10000) {
     const response = await Moralis.EvmApi.token.getTokenPrice({
       address,
       chain,
@@ -75,21 +75,36 @@ const runApp = async () => {
     });
 
     historicalPrice.push(response?.toJSON());
+
+    if (historicalPrice.length % 100 == 0){
+      fs.writeFile(
+
+        `./usdc_historical${historicalPrice.length}.json`,
+    
+        JSON.stringify(historicalPrice),
+    
+        function (err) {
+          if (err) {
+            console.error('Crap happens');
+          }
+        }
+      );
+    }
   }
 
   console.log(historicalPrice);
   fs.writeFile(
 
-    './chainLink_historical.json',
+    './usdc_historical.json',
 
     JSON.stringify(historicalPrice),
 
     function (err) {
-        if (err) {
-            console.error('Crap happens');
-        }
+      if (err) {
+        console.error('Crap happens');
+      }
     }
-);
+  );
 };
 
 runApp();

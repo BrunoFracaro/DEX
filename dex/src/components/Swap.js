@@ -7,6 +7,7 @@ import { ReactComponent as Logo } from "../eth.svg";
 import { Alchemy, Network } from "alchemy-sdk";
 import Stack from '@mui/material/Stack';
 import LinearProgress from '@mui/material/LinearProgress';
+import SimpleAreaChart from './swapChart';
 
 const config = {
   apiKey: process.env.REACT_APP_ALCHEMY,
@@ -171,7 +172,7 @@ function Swap(props) {
   return (
     <Box sx={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'flex-start', padding: 2 }}>
       <Box ref={ref} sx={{
-        width: '30%', minWidth: 400, paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10,
+        height: 'fit-content', width: '30%', minWidth: 400, paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10,
         "box-shadow": `0px 0px 10px 0px #0CD0AC`,
         "-webkit-box-shadow": `0px 0px 10px 0px #0CD0AC`,
         "-moz-box-shadow": `0px 0px 10px 0px #0CD0AC`,
@@ -275,6 +276,7 @@ function Swap(props) {
         }}>
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} mb={5} mt={2} fontSize={28} color={'third.ligth'}>Tokenomics</Typography>
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} color={'primary.medium'}>Check the TOKENOMICS tab to see more about each token project out there.</Typography>
+          <SimpleAreaChart dimensions={dimensions}/>
         </Box>
       </Box>
     </Box>
