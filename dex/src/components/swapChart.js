@@ -2,10 +2,8 @@ import * as React from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Box } from '@mui/material'
 
-const historical = require('../chainLink_historical.json')
-// const historicalUSDC = require('../usdc_historical200.json')
 
-export default function SimpleAreaChart({ dimensions }) {
+export default function SimpleAreaChart({ dimensions, historical }) {
   const [dataX, setDataX] = React.useState([])
   const [dataY, setDataY] = React.useState([])
 
@@ -22,14 +20,14 @@ export default function SimpleAreaChart({ dimensions }) {
     })
     setDataX(xs)
     setDataY(ys)
-  }, [])
+  }, [historical])
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
       <LineChart
-        width={dimensions[0]*0.9}
+        width={dimensions[0]*0.7}
         height={300}
-        series={[{ data: dataY, area: true, showMark: false, label: 'ChainLink to USD' }]}
+        series={[{ data: dataY, area: true, showMark: false }]}
         xAxis={[{ scaleType: 'time', data: dataX }]}
         sx={{
           '.MuiLineElement-root': {

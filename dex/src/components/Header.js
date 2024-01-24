@@ -51,12 +51,12 @@ function Header(props) {
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <Link href="/" underline="none">
-              <Box className={'color-transition'} sx={{ display: 'flex', width: '100%', background: location.pathname == '/' ? '#0CD0AC' : '#38383888', height: '70px', alignItems: 'center', justifyContent: 'flex-start', paddingLeft: 2 }}>
+              <Box className={'color-transition'} sx={{ display: 'flex', width: '96%', background: location.pathname == '/' ? '#0CD0AC' : '#38383888', height: '70px', alignItems: 'center', justifyContent: 'flex-start', paddingLeft: 2 }}>
                 <Typography sx={{ fontSize: 20 }}>SWAP</Typography>
               </Box>
             </Link>
             <Link href="/tokens" underline="none">
-              <Box className={'color-transition2'} sx={{ display: 'flex', width: '100%', background: location.pathname == '/tokens' ? '#36E5C7' : '#38383888', height: '70px', alignItems: 'center', justifyContent: 'flex-start', paddingLeft: 2 }}>
+              <Box className={'color-transition2'} sx={{ display: 'flex', width: '96%', background: location.pathname == '/tokens' ? '#36E5C7' : '#38383888', height: '70px', alignItems: 'center', justifyContent: 'flex-start', paddingLeft: 2 }}>
                 <Typography sx={{ fontSize: 20 }}>TOKENOMICS</Typography>
               </Box>
             </Link>

@@ -9,6 +9,8 @@ import Stack from '@mui/material/Stack';
 import LinearProgress from '@mui/material/LinearProgress';
 import SimpleAreaChart from './swapChart';
 
+const chainlink = require('../chainLink_historical.json')
+
 const config = {
   apiKey: process.env.REACT_APP_ALCHEMY,
   network: Network.ETH_MAINNET,
@@ -27,12 +29,15 @@ function Swap(props) {
   const [exch2, setExch2] = React.useState(0)
   const [tokenOneType, setTokenOneType] = React.useState(tokenList[0])
   const [tokenTwoType, setTokenTwoType] = React.useState(tokenList[1])
+  const [selected, setSelected] = React.useState(0)
 
   const [dimensions, setDimensions] = React.useState([0, 0])
   const ref = React.useRef(null)
 
   const [dimensions2, setDimensions2] = React.useState([0, 0])
   const ref2 = React.useRef(null)
+
+  const historical = [chainlink]
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -184,9 +189,9 @@ function Swap(props) {
   }
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2, flex: 1,  flexWrap: 'wrap', }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2, flex: 1, flexWrap: 'wrap', }}>
       <Box ref={ref} sx={{
-        height: 'fit-content', width: '30%', minWidth: window.screen.width < 400 ? window.screen.width*0.9 : 400, paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10, marginBottom: 2,
+        height: 'fit-content', width: '30%', minWidth: window.screen.width < 400 ? window.screen.width * 0.9 : 400, paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10, marginBottom: 2,
         "box-shadow": `0px 0px 10px 0px #0CD0AC`,
         "-webkit-box-shadow": `0px 0px 10px 0px #0CD0AC`,
         "-moz-box-shadow": `0px 0px 10px 0px #0CD0AC`,
@@ -272,7 +277,7 @@ function Swap(props) {
         </Box>
         <Button onClick={fetchDexSwap} disabled={!value || !isConnected} sx={{ width: '90%', height: '50px', marginTop: '30px' }} color='third' variant='contained'>Swap</Button>
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center', minWidth: window.screen.width < 400 ? window.screen.width*0.9 : 400, }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center', minWidth: window.screen.width < 400 ? window.screen.width * 0.9 : 400, }}>
         <Box sx={{
           width: '95%', height: 'fit-content', paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10,
           "box-shadow": `0px 0px 10px 0px #fafafa`,
@@ -290,7 +295,16 @@ function Swap(props) {
         }}>
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} mb={5} mt={2} fontSize={28} color={'third.ligth'}>Tokenomics</Typography>
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} color={'primary.medium'}>Check the TOKENOMICS tab to see more about each token project out there.</Typography>
-          <SimpleAreaChart dimensions={dimensions2}/>
+          <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'space-evenly', flexWrap: 'wrap' }}>
+            <Box sx={{display: 'flex', maxWidth: window.screen.width < 400 ? 260 : 120, flexWrap: 'wrap', justifyContent: 'space-between', marginTop: 2, alignItems: 'center'}}>
+              {tokenList.sort().slice(1, 5).map((item, index) => (
+                <Box onClick={() => setSelected(index)} sx={{cursor: 'pointer', display: 'flex', width: 120, paddingTop: 0.5, paddingBottom: 0.5, borderRadius: 5, background: selected == index ? '#36E5C7' : '#00000000', border: 0.7, borderColor: '#36E5C7', alignItems: 'center', justifyContent: 'center', marginBottom: 1 }}>
+                  <Typography>{item.name}</Typography>
+                </Box>
+              ))}
+            </Box>
+            <SimpleAreaChart dimensions={dimensions2} historical={historical[selected]} />
+          </Box>
         </Box>
       </Box>
     </Box>
