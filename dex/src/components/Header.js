@@ -13,7 +13,7 @@ function Header(props) {
     <>
       {window.innerWidth > 500 ? (
         <Box sx={{
-          display: 'flex', background: '#38383888', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingRight: '10%', flexWrap: 'wrap',
+          display: 'flex', background: '#38383888', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingRight: '10%', flex: 1, height: '70px',
           "box-shadow": `0px 0px 10px 0px #383838`,
           "-webkit-box-shadow": `0px 0px 10px 0px #383838`,
           "-moz-box-shadow": `0px 0px 10px 0px #383838`,
@@ -30,19 +30,23 @@ function Header(props) {
               </Box>
             </Link>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'center' }}>
             <Logo />
           </Box>
-          <Button onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect Wallet"}</Button>
+          <Button sx={{
+            "box-shadow": `0px 0px 10px 0px #36E5C7`,
+            "-webkit-box-shadow": `0px 0px 10px 0px #36E5C7`,
+            "-moz-box-shadow": `0px 0px 10px 0px #36E5C7`,
+          }} onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect Wallet"}</Button>
         </Box>
       ) : (
         <Box sx={{
-          display: 'flex', background: '#38383888', flexDirection: 'column', alignItems: 'center', width: '100%',
+          display: 'flex', background: '#38383888', flexDirection: 'column', alignItems: 'center', flex: 1,
           "box-shadow": `0px 0px 10px 0px #383838`,
           "-webkit-box-shadow": `0px 0px 10px 0px #383838`,
           "-moz-box-shadow": `0px 0px 10px 0px #383838`,
         }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '70px' }}>
             <Logo />
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -57,7 +61,13 @@ function Header(props) {
               </Box>
             </Link>
           </Box>
-          <Button onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect Wallet"}</Button>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '70px' }}>
+            <Button sx={{
+              "box-shadow": `0px 0px 10px 0px #36E5C7`,
+              "-webkit-box-shadow": `0px 0px 10px 0px #36E5C7`,
+              "-moz-box-shadow": `0px 0px 10px 0px #36E5C7`,
+            }} onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect Wallet"}</Button>
+          </Box>
         </Box>
       )}
     </>

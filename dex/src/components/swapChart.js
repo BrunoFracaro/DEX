@@ -14,16 +14,12 @@ export default function SimpleAreaChart({ dimensions }) {
     let ys = []
     historical.map((item, index) => {
       const format = Date.parse('23 Jan 2023 10:00:00 GMT')
-      console.log('format', format)
       const date = new Date(format)
-      console.log('date', date)
       date.setDate(date.getDate() + index)
-      console.log('date', date)
       xs.push(date)
       ys.push(item.usdPrice)
       return null
     })
-    console.log({ xs })
     setDataX(xs)
     setDataY(ys)
   }, [])
