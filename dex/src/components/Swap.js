@@ -31,6 +31,9 @@ function Swap(props) {
   const [dimensions, setDimensions] = React.useState([0, 0])
   const ref = React.useRef(null)
 
+  const [dimensions2, setDimensions2] = React.useState([0, 0])
+  const ref2 = React.useRef(null)
+
   const [txDetails, setTxDetails] = React.useState({
     to: null,
     data: null,
@@ -138,6 +141,7 @@ function Swap(props) {
     fetchPrices(tokenList[0].address, tokenList[1].address)
     getUserBalance()
     setDimensions([ref.current.clientWidth, ref.current.clientHeight])
+    setDimensions2([ref2.current.clientWidth, ref2.current.clientHeight])
   }, [])
 
   const getUserBalance = async () => {
@@ -170,9 +174,9 @@ function Swap(props) {
   }
 
   return (
-    <Box sx={{ display: 'flex', width: '100%', flexDirection: 'row', justifyContent: 'flex-start', padding: 2 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', padding: 2, flex: 1,  flexWrap: 'wrap', }}>
       <Box ref={ref} sx={{
-        height: 'fit-content', width: '30%', minWidth: 400, paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10,
+        height: 'fit-content', width: '30%', minWidth: window.innerWidth < 400 ? window.innerWidth*0.9 : 400, paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10, marginBottom: 2,
         "box-shadow": `0px 0px 10px 0px #0CD0AC`,
         "-webkit-box-shadow": `0px 0px 10px 0px #0CD0AC`,
         "-moz-box-shadow": `0px 0px 10px 0px #0CD0AC`,
@@ -258,9 +262,9 @@ function Swap(props) {
         </Box>
         <Button onClick={fetchDexSwap} disabled={!value || !isConnected} sx={{ width: '90%', height: '50px', marginTop: '30px' }} color='third' variant='contained'>Swap</Button>
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center', }}>
         <Box sx={{
-          width: '90%', height: 'fit-content', minWidth: 400, paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10, marginLeft: '2%',
+          width: '95%', height: 'fit-content', paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10, marginLeft: '2%',
           "box-shadow": `0px 0px 10px 0px #fafafa`,
           "-webkit-box-shadow": `0px 0px 10px 0px #fafafa`,
           "-moz-box-shadow": `0px 0px 10px 0px #fafafa`,
@@ -268,15 +272,15 @@ function Swap(props) {
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} mb={5} mt={2} fontSize={28} color={'primary.ligth'}>Swapping ERC-20 tokens</Typography>
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} color={'primary.medium'}>First you have to authorize our contract to spent your ERC-20 tokens that you want to give, as for defult, no one is authorized to trade tokens on your behalf. Next we will transfer your desired tokens from a pool of tokens using the Alchemy aggregator. This will asure the minimum gas fee and stragith convertio rate. We dont take any profit from the swap.</Typography>
         </Box>
-        <Box sx={{
-          marginTop: 2, width: '90%', height: 'fit-content', minWidth: 400, paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10, marginLeft: '2%',
+        <Box ref={ref2} sx={{
+          marginTop: 2, width: '95%', height: 'fit-content', paddingBottom: 2, background: '#38383888', borderRadius: 5, boxShadow: 10, marginLeft: '2%',
           "box-shadow": `0px 0px 10px 0px #36E5C7`,
           "-webkit-box-shadow": `0px 0px 10px 0px #36E5C7`,
           "-moz-box-shadow": `0px 0px 10px 0px #36E5C7`,
         }}>
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} mb={5} mt={2} fontSize={28} color={'third.ligth'}>Tokenomics</Typography>
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} color={'primary.medium'}>Check the TOKENOMICS tab to see more about each token project out there.</Typography>
-          <SimpleAreaChart dimensions={dimensions}/>
+          <SimpleAreaChart dimensions={dimensions2}/>
         </Box>
       </Box>
     </Box>
