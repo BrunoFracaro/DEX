@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box, Typography, TextField, Fab, Popover, Button } from '@mui/material'
 import SwapVertIcon from '@mui/icons-material/SwapVert';
-import axios from 'axios'
 import { useSendTransaction, useWaitForTransaction, useBalance } from "wagmi";
 import { ReactComponent as Logo } from "../assets/images/eth.svg";
 import { Alchemy, Network } from "alchemy-sdk";
