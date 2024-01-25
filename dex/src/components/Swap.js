@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Typography, TextField, Fab, Popover, Button } from '@mui/material'
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import axios from 'axios'
-import { useSendTransaction, useWaitForTransaction } from "wagmi";
+import { useSendTransaction, useWaitForTransaction, useBalance } from "wagmi";
 import { ReactComponent as Logo } from "../assets/images/eth.svg";
 import { Alchemy, Network } from "alchemy-sdk";
 import Stack from '@mui/material/Stack';
@@ -28,11 +28,13 @@ function Swap(props) {
   const [value, setValue] = React.useState('')
   const [displayBalance, setDisplayBalance] = React.useState('')
   const [userBalance, setUserBalance] = React.useState([])
-  const [exch1, setExch1] = React.useState(0)
-  const [exch2, setExch2] = React.useState(0)
+  const [convertRatio, setConvertRatio] = React.useState(0)
   const [tokenOneType, setTokenOneType] = React.useState(tokenList[0])
   const [tokenTwoType, setTokenTwoType] = React.useState(tokenList[1])
   const [selected, setSelected] = React.useState(0)
+  const balance = useBalance({
+    address: address,
+  })
 
   const [dimensions, setDimensions] = React.useState([0, 0])
   const ref = React.useRef(null)
@@ -58,11 +60,11 @@ function Swap(props) {
     if (item.name == tokenTwoType.name) {
       setTokenOneType(tokenTwoType)
       setTokenTwoType(tokenOneType)
-      fetchPrices(tokenTwoType.address, tokenOneType.address)
+      fetchPrices(tokenTwoType, tokenOneType)
       updateBalance(tokenTwoType)
     } else {
       setTokenOneType(item)
-      fetchPrices(item.address, tokenTwoType.address)
+      fetchPrices(item, tokenTwoType)
       updateBalance(item)
     }
     handlePopoverClose()
@@ -72,11 +74,11 @@ function Swap(props) {
     if (item.name == tokenOneType.name) {
       setTokenTwoType(tokenOneType)
       setTokenOneType(tokenTwoType)
-      fetchPrices(tokenTwoType.address, tokenOneType.address)
+      fetchPrices(tokenTwoType, tokenOneType)
       updateBalance(tokenTwoType)
     } else {
       setTokenTwoType(item)
-      fetchPrices(tokenOneType.address, item.address)
+      fetchPrices(tokenOneType, item)
     }
     handlePopoverClose()
   }
@@ -84,7 +86,7 @@ function Swap(props) {
   const invert = () => {
     setTokenTwoType(tokenOneType)
     setTokenOneType(tokenTwoType)
-    fetchPrices(tokenTwoType.address, tokenOneType.address)
+    fetchPrices(tokenTwoType, tokenOneType)
     updateBalance(tokenTwoType)
   }
 
@@ -100,7 +102,7 @@ function Swap(props) {
   }, []);
 
   React.useEffect(() => {
-    fetchPrices(tokenList[0].address, tokenList[1].address)
+    fetchPrices(tokenList[0], tokenList[1])
     getUserBalance()
     setDimensions([ref.current.clientWidth, ref.current.clientHeight])
     setDimensions2([ref2.current.clientWidth, ref2.current.clientHeight])
@@ -132,28 +134,27 @@ function Swap(props) {
   })
 
   React.useEffect(() => {
-    console.log({isSuccess})
+    console.log({ isSuccess })
   }, [isSuccess])
 
   async function fetchDexSwap() {
 
+    const absoluteValue = String(Math.pow(10, tokenOneType.decimals) * value)
+
     const params = {
-      sellToken: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-      buyToken: '0x514910771af9ca656af840dff83e8264ecf986ca',
-      sellAmount: '1000000000000000',
-      takerAddress: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
+      sellToken: tokenOneType.address,
+      buyToken: tokenTwoType.address,
+      sellAmount: absoluteValue,
+      takerAddress: address,
     }
 
     const headers = { "0x-api-key": process.env.REACT_APP_OX };
 
-    // Fetch the swap quote.
     const response = await fetch(
       `https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`, { headers }
     );
 
     const responseJson = await response.json()
-
-    console.log('responsejson()', responseJson)
 
     const newTx = {
       to: responseJson.to,
@@ -163,34 +164,42 @@ function Swap(props) {
     setTxDetails(newTx)
   }
 
-
   const getUserBalance = async () => {
     const tokenAddress = tokenList.map((item) => item.address)
-    console.log('address,', address, tokenAddress)
     const data = await alchemy.core.getTokenBalances(
       address,
       tokenAddress
     );
-    console.log('data', data)
     setUserBalance(data.tokenBalances)
     const balance = data.tokenBalances.filter((item) => item.contractAddress == tokenOneType.address)[0].tokenBalance
-    console.log('Number(balance)', Number(balance))
     setDisplayBalance(Number(balance))
   }
 
   const updateBalance = (newTokenOne) => {
     const balance = userBalance.filter((item) => item.contractAddress == newTokenOne.address)[0].tokenBalance
-    console.log('Number(balance)', Number(balance))
     setDisplayBalance(Number(balance))
   }
 
   const fetchPrices = async (one, two) => {
-    const res = await axios.get('http://localhost:3001/tokenPrice', {
-      params: { addressOne: one, addressTwo: two }
-    })
 
-    setExch1(res.data.tokenOne)
-    setExch2(res.data.tokenTwo)
+    const absoluteValue = String(Math.pow(10, one.decimals) * 1)
+
+    const params = {
+      sellToken: one.address,
+      buyToken: two.address,
+      sellAmount: absoluteValue,
+      takerAddress: address,
+    };
+
+    const headers = { "0x-api-key": process.env.REACT_APP_OX };
+
+    const response = await fetch(
+      `https://api.0x.org/swap/v1/price?${qs.stringify(params)}`, { headers }
+    );
+
+    const responseJson = await response.json()
+
+    setConvertRatio(responseJson.price)
   }
 
   return (
@@ -231,7 +240,11 @@ function Swap(props) {
           <TextField type={'number'} placeholder='0' InputProps={{ sx: { borderRadius: 2, color: '#f00' } }} inputProps={{ style: { color: '#fff' } }} sx={{ color: '#fff', background: '#000', width: '60%', borderRadius: 2 }} focused color='primary' id="outlined-basic" label="" variant="outlined" value={value} onChange={(e) => setValue(e.target.value)} />
           <Typography sx={{ width: 80 }}>{tokenOneType.ticker}</Typography>
           <Fab onClick={handlePopoverOpen} id={'myToken'} color="primary" aria-label="add">
-            <Box component="img" sx={{ width: '70%', borderRadius: 5 }} alt="selected token" src={tokenOneType.img} />
+            {tokenOneType.ticker == "ETH" ? (
+              <Logo width={'40'} />
+            ) : (
+              <Box component="img" sx={{ width: '40px', borderRadius: 5 }} alt="selected token" src={tokenOneType.img} />
+            )}
           </Fab>
           <Popover
             id={'myTokenPopover'}
@@ -247,22 +260,34 @@ function Swap(props) {
               {tokenList.map((item) => (
                 <Box onClick={() => handleChangeToken1(item)} sx={{ display: 'flex', width: 150, flexDirection: 'row', alignItems: 'center', cursor: 'pointer', padding: 1, justifyContent: 'space-between' }}>
                   <Typography color='third.main'>{item.name}</Typography>
-                  <Box component="img" sx={{ width: 40, borderRadius: 5 }} alt="token img" src={item.img} />
+                  {item.ticker == "ETH" ? (
+                    <Logo width={'40'} />
+                  ) : (
+                    <Box component="img" sx={{ width: '40px', borderRadius: 5 }} alt="selected token" src={item.img} />
+                  )}
                 </Box>
               ))}
             </Box>
           </Popover>
         </Box>
         <Box sx={{ marginTop: '10px', marginBottom: '20px', display: 'flex', width: '90%', flexDirection: 'row', justifyContent: 'space-between', marginLeft: '5%' }}>
-          <Typography sx={{ color: 'third.main', fontSize: 12 }}>US$ {Math.round(value * exch1 * 100) / 100}</Typography>
-          <Typography sx={{ color: 'primary.medium', fontSize: 12 }}>Your balance: {Math.round(displayBalance * 100) / 100}</Typography>
+          {/* <Typography sx={{ color: 'third.main', fontSize: 12 }}>US$ {Math.round(value * convertRatio * 100) / 100}</Typography> */}
+          {tokenOneType.ticker == "ETH" ? (
+            <Typography sx={{ color: 'primary.medium', fontSize: 12 }}>Your balance: {!balance.data ? '' : Math.round(balance.data.formatted * 100000) / 100000}</Typography>
+          ) : (
+            <Typography sx={{ color: 'primary.medium', fontSize: 12 }}>Your balance: {Math.round(displayBalance * 100) / 100}</Typography>
+          )}
           <SwapVertIcon onClick={() => invert()} sx={{ cursor: 'pointer', marginTop: '10px' }} color={'third'} fontSize='large' />
         </Box>
         <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-evenly', alignItems: 'center' }}>
-          <TextField InputProps={{ sx: { borderRadius: 2 } }} inputProps={{ style: { color: '#fff' } }} sx={{ color: '#fff', background: '#000', width: '60%', borderRadius: 2 }} focused color='primary' id="outlined-basic" label="" variant="outlined" value={Math.round(value * exch1 / exch2 * 10000) / 10000} />
+          <TextField InputProps={{ sx: { borderRadius: 2 } }} inputProps={{ style: { color: '#fff' } }} sx={{ color: '#fff', background: '#000', width: '60%', borderRadius: 2 }} focused color='primary' id="outlined-basic" label="" variant="outlined" value={Math.round(value * convertRatio * 10000) / 10000} />
           <Typography sx={{ width: 80 }}>{tokenTwoType.ticker}</Typography>
           <Fab onClick={handlePopoverOpen2} id={'changeToken'} color="primary" aria-label="add">
-            <Box component="img" sx={{ width: '70%', borderRadius: 5 }} alt="Lottery 1" src={tokenTwoType.img} />
+            {tokenTwoType.ticker == "ETH" ? (
+              <Logo width={'40'} />
+            ) : (
+              <Box component="img" sx={{ width: '40px', borderRadius: 5 }} alt="selected token" src={tokenTwoType.img} />
+            )}
           </Fab>
           <Popover
             id={'changeTokenPopover'}
@@ -278,7 +303,11 @@ function Swap(props) {
               {tokenList.sort().map((item) => (
                 <Box onClick={() => handleChangeToken2(item)} sx={{ display: 'flex', width: 150, flexDirection: 'row', alignItems: 'center', cursor: 'pointer', padding: 1, justifyContent: 'space-between' }}>
                   <Typography color={'third.main'}>{item.name}</Typography>
-                  <Box component="img" sx={{ width: 40, borderRadius: 5 }} alt="Lottery 1" src={item.img} />
+                  {item.ticker == "ETH" ? (
+                    <Logo width={'40'} />
+                  ) : (
+                    <Box component="img" sx={{ width: '40px', borderRadius: 5 }} alt="selected token" src={item.img} />
+                  )}
                 </Box>
               ))}
             </Box>
@@ -306,7 +335,7 @@ function Swap(props) {
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} color={'primary.medium'}>Check the TOKENOMICS tab to see more about each token project out there.</Typography>
           <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'space-evenly', flexWrap: 'wrap' }}>
             <Box sx={{ display: 'flex', maxWidth: window.screen.width < 400 ? 260 : 120, flexWrap: 'wrap', justifyContent: 'space-between', marginTop: 2, alignItems: 'center' }}>
-              {tokenList.sort().slice(1, 5).map((item, index) => (
+              {tokenList.sort().slice(0, 4).map((item, index) => (
                 <Box onClick={() => setSelected(index)} sx={{ cursor: 'pointer', display: 'flex', width: 120, paddingTop: 0.5, paddingBottom: 0.5, borderRadius: 5, background: selected == index ? '#36E5C7' : '#00000000', border: 0.7, borderColor: '#36E5C7', alignItems: 'center', justifyContent: 'center', marginBottom: 1 }}>
                   <Typography>{item.name}</Typography>
                 </Box>
