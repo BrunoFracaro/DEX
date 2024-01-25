@@ -8,6 +8,7 @@ import { Alchemy, Network } from "alchemy-sdk";
 import Stack from '@mui/material/Stack';
 import LinearProgress from '@mui/material/LinearProgress';
 import SimpleAreaChart from './swapChart';
+const qs = require('qs');
 
 const chainlink = require('../assets/historical/chainLink_historical.json')
 const theter = require('../assets/historical/theter_historical.json')
@@ -23,6 +24,7 @@ const tokenList = require('../assets/historical/tokenList.json')
 function Swap(props) {
   const { address, isConnected, connect } = props;
 
+  const historical = [chainlink, theter]
   const [value, setValue] = React.useState('')
   const [displayBalance, setDisplayBalance] = React.useState('')
   const [userBalance, setUserBalance] = React.useState([])
@@ -37,80 +39,6 @@ function Swap(props) {
 
   const [dimensions2, setDimensions2] = React.useState([0, 0])
   const ref2 = React.useRef(null)
-
-  const historical = [chainlink, theter]
-
-  React.useEffect(() => {
-    const handleResize = () => {
-      setDimensions([ref.current.clientWidth, ref.current.clientHeight])
-      setDimensions2([ref2.current.clientWidth, ref2.current.clientHeight])
-    };
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  React.useEffect(() => {
-    fetchPrices(tokenList[0].address, tokenList[1].address)
-    getUserBalance()
-    setDimensions([ref.current.clientWidth, ref.current.clientHeight])
-    setDimensions2([ref2.current.clientWidth, ref2.current.clientHeight])
-  }, [])
-
-  const [txDetails, setTxDetails] = React.useState({
-    to: null,
-    data: null,
-    value: null,
-  });
-
-  const { data, sendTransaction } = useSendTransaction({
-    request: {
-      from: address,
-      to: String(txDetails.to),
-      data: String(txDetails.data),
-      value: String(txDetails.value),
-    }
-  })
-
-  React.useEffect(() => {
-    if (txDetails.to && isConnected) {
-      sendTransaction();
-    }
-  }, [txDetails])
-
-  const { isLoading, isSuccess } = useWaitForTransaction({
-    hash: data?.hash,
-  })
-
-  async function fetchDexSwap() {
-
-    console.log('tokenOneType', tokenOneType.address, address)
-
-    // const res = await axios.get('http://localhost:3001/allowance', {
-    //   params: { addressToken: tokenOneType.address, address: address }
-    // })
-
-    const allowance = await axios.get(`https://api.1inch.io/v5.0/1/approve/allowance?tokenAddress=${tokenOneType.address}&walletAddress=${address}`)
-
-    if (allowance.data.allowance === "0") {
-
-      const approve = await axios.get(`https://api.1inch.io/v5.0/1/approve/transaction?tokenAddress=${tokenOneType.address}`)
-
-      setTxDetails(approve.data);
-      console.log("not approved")
-      return
-
-    }
-
-    const tx = await axios.get(
-      `https://api.1inch.io/v5.0/1/swap?fromTokenAddress=${tokenOneType.address}&toTokenAddress=${tokenTwoType.address}&amount=${value.padEnd(tokenOneType.decimals + value.length, '0')}&fromAddress=${address}&slippage=${2.5}`
-    )
-
-    setTxDetails(tx.data.tx);
-
-  }
-
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [anchorEl2, setAnchorEl2] = React.useState(null);
@@ -160,6 +88,82 @@ function Swap(props) {
     updateBalance(tokenTwoType)
   }
 
+  React.useEffect(() => {
+    const handleResize = () => {
+      setDimensions([ref.current.clientWidth, ref.current.clientHeight])
+      setDimensions2([ref2.current.clientWidth, ref2.current.clientHeight])
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    fetchPrices(tokenList[0].address, tokenList[1].address)
+    getUserBalance()
+    setDimensions([ref.current.clientWidth, ref.current.clientHeight])
+    setDimensions2([ref2.current.clientWidth, ref2.current.clientHeight])
+  }, [])
+
+  const [txDetails, setTxDetails] = React.useState({
+    to: null,
+    data: null,
+    value: null,
+  });
+
+  React.useEffect(() => {
+    if (txDetails.to && isConnected) {
+      sendTransaction();
+    }
+  }, [txDetails])
+
+  const { data, sendTransaction } = useSendTransaction({
+    request: {
+      from: address,
+      to: String(txDetails.to),
+      data: String(txDetails.data),
+      value: String(txDetails.value),
+    }
+  })
+
+  const { isLoading, isSuccess } = useWaitForTransaction({
+    hash: data?.hash,
+  })
+
+  React.useEffect(() => {
+    console.log({isSuccess})
+  }, [isSuccess])
+
+  async function fetchDexSwap() {
+
+    const params = {
+      sellToken: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+      buyToken: '0x514910771af9ca656af840dff83e8264ecf986ca',
+      sellAmount: '1000000000000000',
+      takerAddress: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
+    }
+
+    const headers = { "0x-api-key": process.env.REACT_APP_OX };
+
+    // Fetch the swap quote.
+    const response = await fetch(
+      `https://api.0x.org/swap/v1/quote?${qs.stringify(params)}`, { headers }
+    );
+
+    const responseJson = await response.json()
+
+    console.log('responsejson()', responseJson)
+
+    const newTx = {
+      to: responseJson.to,
+      data: responseJson.data,
+      value: responseJson.value
+    }
+    setTxDetails(newTx)
+  }
+
+
   const getUserBalance = async () => {
     const tokenAddress = tokenList.map((item) => item.address)
     console.log('address,', address, tokenAddress)
@@ -205,7 +209,11 @@ function Swap(props) {
                 <Typography marginBottom={2} color={'third.light'} width={'50%'} marginTop={2} fontWeight={600}>
                   Connect your Ethereum wallet to make ERC-20 tokens swaps
                 </Typography>
-                <Button onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect"}</Button>
+                <Button sx={{
+                  "box-shadow": `0px 0px 10px 0px #36E5C7`,
+                  "-webkit-box-shadow": `0px 0px 10px 0px #36E5C7`,
+                  "-moz-box-shadow": `0px 0px 10px 0px #36E5C7`,
+                }} onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect Wallet"}</Button>
               </>
             ) : (
               <>
@@ -297,9 +305,9 @@ function Swap(props) {
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} mb={5} mt={2} fontSize={28} color={'third.ligth'}>Tokenomics</Typography>
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} color={'primary.medium'}>Check the TOKENOMICS tab to see more about each token project out there.</Typography>
           <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'space-evenly', flexWrap: 'wrap' }}>
-            <Box sx={{display: 'flex', maxWidth: window.screen.width < 400 ? 260 : 120, flexWrap: 'wrap', justifyContent: 'space-between', marginTop: 2, alignItems: 'center'}}>
+            <Box sx={{ display: 'flex', maxWidth: window.screen.width < 400 ? 260 : 120, flexWrap: 'wrap', justifyContent: 'space-between', marginTop: 2, alignItems: 'center' }}>
               {tokenList.sort().slice(1, 5).map((item, index) => (
-                <Box onClick={() => setSelected(index)} sx={{cursor: 'pointer', display: 'flex', width: 120, paddingTop: 0.5, paddingBottom: 0.5, borderRadius: 5, background: selected == index ? '#36E5C7' : '#00000000', border: 0.7, borderColor: '#36E5C7', alignItems: 'center', justifyContent: 'center', marginBottom: 1 }}>
+                <Box onClick={() => setSelected(index)} sx={{ cursor: 'pointer', display: 'flex', width: 120, paddingTop: 0.5, paddingBottom: 0.5, borderRadius: 5, background: selected == index ? '#36E5C7' : '#00000000', border: 0.7, borderColor: '#36E5C7', alignItems: 'center', justifyContent: 'center', marginBottom: 1 }}>
                   <Typography>{item.name}</Typography>
                 </Box>
               ))}

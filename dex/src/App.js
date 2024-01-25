@@ -19,7 +19,7 @@ function App() {
     <div className="App">
       <ThemeProvider theme={defaultTheme}>
         <Header connect={connect} isConnected={isConnected} address={address} />
-        <div>
+        <div className="pageBack">
           <Routes>
             <Route path="/" element={<Swap connect={connect} isConnected={isConnected} address={address} />} />
             <Route path="/tokens" element={<Tokens />} />
