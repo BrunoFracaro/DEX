@@ -3,13 +3,14 @@ import { Box, Typography, TextField, Fab, Popover, Button } from '@mui/material'
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import axios from 'axios'
 import { useSendTransaction, useWaitForTransaction } from "wagmi";
-import { ReactComponent as Logo } from "../eth.svg";
+import { ReactComponent as Logo } from "../assets/images/eth.svg";
 import { Alchemy, Network } from "alchemy-sdk";
 import Stack from '@mui/material/Stack';
 import LinearProgress from '@mui/material/LinearProgress';
 import SimpleAreaChart from './swapChart';
 
-const chainlink = require('../chainLink_historical.json')
+const chainlink = require('../assets/historical/chainLink_historical.json')
+const theter = require('../assets/historical/theter_historical.json')
 
 const config = {
   apiKey: process.env.REACT_APP_ALCHEMY,
@@ -17,7 +18,7 @@ const config = {
 };
 const alchemy = new Alchemy(config);
 
-const tokenList = require('../tokenList.json')
+const tokenList = require('../assets/historical/tokenList.json')
 
 function Swap(props) {
   const { address, isConnected, connect } = props;
@@ -37,7 +38,7 @@ function Swap(props) {
   const [dimensions2, setDimensions2] = React.useState([0, 0])
   const ref2 = React.useRef(null)
 
-  const historical = [chainlink]
+  const historical = [chainlink, theter]
 
   React.useEffect(() => {
     const handleResize = () => {

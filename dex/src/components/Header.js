@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Button, Typography, Link } from '@mui/material'
 import { useLocation } from 'react-router-dom'
-import { ReactComponent as Logo } from "../cryptoswap.svg";
+import { ReactComponent as Logo } from "../assets/images/cryptoswap.svg";
 
 function Header(props) {
 
