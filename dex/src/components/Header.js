@@ -2,6 +2,7 @@ import React from 'react'
 import { Box, Button, Typography, Link } from '@mui/material'
 import { useLocation } from 'react-router-dom'
 import { ReactComponent as Logo } from "../assets/images/cryptoswap.svg";
+import { ReactComponent as Metamask } from "../assets/images/metamask.svg";
 
 function Header(props) {
 
@@ -37,7 +38,11 @@ function Header(props) {
             "box-shadow": `0px 0px 10px 0px #36E5C7`,
             "-webkit-box-shadow": `0px 0px 10px 0px #36E5C7`,
             "-moz-box-shadow": `0px 0px 10px 0px #36E5C7`,
-          }} onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect Wallet"}</Button>
+            textTransform: 'none'
+          }} onClick={connect} variant='contained' color={'third'}>
+            <Metamask width='30' height='30' />
+            <Typography marginLeft={2}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect Wallet"}</Typography>
+          </Button>
         </Box>
       ) : (
         <Box sx={{
@@ -66,7 +71,11 @@ function Header(props) {
               "box-shadow": `0px 0px 10px 0px #36E5C7`,
               "-webkit-box-shadow": `0px 0px 10px 0px #36E5C7`,
               "-moz-box-shadow": `0px 0px 10px 0px #36E5C7`,
-            }} onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect Wallet"}</Button>
+              textTransform: 'none'
+            }} onClick={connect} variant='contained' color={'third'}>
+              <Metamask width='30' height='30' />
+              <Typography marginLeft={2}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect Wallet"}</Typography>
+            </Button>
           </Box>
         </Box>
       )}

@@ -7,6 +7,7 @@ import { Alchemy, Network } from "alchemy-sdk";
 import Stack from '@mui/material/Stack';
 import LinearProgress from '@mui/material/LinearProgress';
 import SimpleAreaChart from './swapChart';
+import { ReactComponent as Metamask } from "../assets/images/metamask.svg";
 const qs = require('qs');
 
 const chainlink = require('../assets/historical/chainLink_historical.json')
@@ -221,7 +222,11 @@ function Swap(props) {
                   "box-shadow": `0px 0px 10px 0px #36E5C7`,
                   "-webkit-box-shadow": `0px 0px 10px 0px #36E5C7`,
                   "-moz-box-shadow": `0px 0px 10px 0px #36E5C7`,
-                }} onClick={connect} variant='contained' color={'third'}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect Wallet"}</Button>
+                  textTransform: 'none'
+                }} onClick={connect} variant='contained' color={'third'}>
+                  <Metamask width='30' height='30' />
+                  <Typography marginLeft={2}>{isConnected ? (address.slice(0, 4) + "..." + address.slice(38)) : "Connect Wallet"}</Typography>
+                </Button>
               </>
             ) : (
               <>
