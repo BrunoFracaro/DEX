@@ -153,7 +153,7 @@ function Swap(props) {
       to: tokenOneType.address,
       abi: erc20ABI,
       functionName: "allowance",
-      args: [address, exchangeProxy],
+      args: [exchangeProxy, MAX_ALLOWANCE],
     }
   })
 
