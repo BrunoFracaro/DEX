@@ -186,13 +186,16 @@ function Swap(props) {
 
     console.log({responseJson})
 
-    await refetch()
+    if (tokenOneType.address !== '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'){
 
-    console.log({allowance})
+      await refetch()
 
-    if (allowance._hex == '0x00'){
-      allowSend()
-      console.log('dsdsds', allowSucc)
+      console.log({allowance})
+
+      if (allowance._hex == '0x00'){
+        allowSend()
+        console.log('dsdsds', allowSucc)
+      }
     }
 
     const newTx = {
