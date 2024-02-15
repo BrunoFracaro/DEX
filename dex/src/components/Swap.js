@@ -335,6 +335,9 @@ function Swap(props) {
           "-webkit-box-shadow": `0px 0px 10px 0px #36E5C7`,
           "-moz-box-shadow": `0px 0px 10px 0px #36E5C7`,
         }}>
+          <Box className={'modalGlass'} sx={{ zIndex: 100000, borderRadius: 5, position: 'absolute', display: 'flex', width: dimensions2[0], height: dimensions2[1], justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+            <Typography color={'third.light'} fontWeight={600} marginBottom={2}>Coming Soon...</Typography>
+          </Box>
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} mb={5} mt={2} fontSize={28} color={'third.ligth'}>Tokenomics</Typography>
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} color={'primary.medium'}>Check the TOKENOMICS tab to see more about each token project out there.</Typography>
           <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'space-evenly', flexWrap: 'wrap' }}>

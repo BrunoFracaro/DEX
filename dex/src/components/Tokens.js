@@ -2,7 +2,7 @@ import React from 'react'
 
 function Tokens() {
   return (
-    <div>Tokens</div>
+    <div>Coming soon...</div>
   )
 }
 
