@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Typography, TextField, Fab, Popover, Button } from '@mui/material'
 import SwapVertIcon from '@mui/icons-material/SwapVert';
-import { useSendTransaction, useWaitForTransaction, useBalance } from "wagmi";
+import { useSendTransaction, useWaitForTransaction, useBalance, erc20ABI, useContractRead, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ReactComponent as Logo } from "../assets/images/eth.svg";
 import { Alchemy, Network } from "alchemy-sdk";
 import Stack from '@mui/material/Stack';
@@ -9,6 +9,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import SimpleAreaChart from './swapChart';
 import { ReactComponent as Metamask } from "../assets/images/metamask.svg";
 const qs = require('qs');
+import { MAX_ALLOWANCE } from './constants';
 
 const chainlink = require('../assets/historical/chainLink_historical.json')
 const theter = require('../assets/historical/theter_historical.json')
@@ -137,6 +138,33 @@ function Swap(props) {
     console.log({ isSuccess })
   }, [isSuccess])
 
+  const exchangeProxy = "0xDef1C0ded9bec7F1a1670819833240f027b25EfF";
+
+  const { data: allowance, refetch } = useContractRead({
+    address: tokenOneType.address,
+    abi: erc20ABI,
+    functionName: "allowance",
+    args: [address, exchangeProxy],
+  });
+
+  const { data: allowData, sendTransaction: allowSend } = useSendTransaction({
+    request: {
+      from: address,
+      to: tokenOneType.address,
+      abi: erc20ABI,
+      functionName: "allowance",
+      args: [address, exchangeProxy],
+    }
+  })
+
+  const { isLoading: allowLoading, isSuccess: allowSucc } = useWaitForTransaction({
+    hash: allowData?.hash,
+  })
+
+  React.useEffect(() => {
+    console.log({ allowLoading, allowSucc })
+  }, [allowLoading, allowSucc])
+
   async function fetchDexSwap() {
 
     const absoluteValue = String(Math.pow(10, tokenOneType.decimals) * value)
@@ -155,6 +183,17 @@ function Swap(props) {
     );
 
     const responseJson = await response.json()
+
+    console.log({responseJson})
+
+    await refetch()
+
+    console.log({allowance})
+
+    if (allowance._hex == '0x00'){
+      allowSend()
+      console.log('dsdsds', allowSucc)
+    }
 
     const newTx = {
       to: responseJson.to,
@@ -335,8 +374,8 @@ function Swap(props) {
           "-webkit-box-shadow": `0px 0px 10px 0px #36E5C7`,
           "-moz-box-shadow": `0px 0px 10px 0px #36E5C7`,
         }}>
-          <Box className={'modalGlass'} sx={{ zIndex: 100000, borderRadius: 5, position: 'absolute', display: 'flex', width: dimensions2[0], height: dimensions2[1], justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-            <Typography color={'third.light'} fontWeight={600} marginBottom={2}>Coming Soon...</Typography>
+          <Box className={'modalGlass'} sx={{ zIndex: 100, borderRadius: 5, position: 'absolute', display: 'flex', width: dimensions2[0], height: dimensions2[1], justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+            <Typography color={'third.light'} fontWeight={600} marginBottom={2}>Tokenomics tab coming soon...</Typography>
           </Box>
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} mb={5} mt={2} fontSize={28} color={'third.ligth'}>Tokenomics</Typography>
           <Typography textAlign={'left'} ml={'5%'} width={'90%'} color={'primary.medium'}>Check the TOKENOMICS tab to see more about each token project out there.</Typography>
